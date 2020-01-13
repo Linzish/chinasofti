@@ -1,0 +1,278 @@
+version: '3.7'
+
+services:
+  eureka01:
+    image: eureka01:1.0
+    hostname: eureka01
+    container_name: eureka01
+    ports:
+      - 7777:7777
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.10
+
+  eureka02:
+    image: eureka02:1.0
+    hostname: eureka02
+    container_name: eureka02
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.11
+
+  txlcn-tm:
+    image: txlcn-tm:1.0
+    hostname: txlcn-tm
+    container_name: txlcn-tm
+    ports:
+      - 9997:9997
+    links:
+      - redis5_v1:redis
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.17
+
+  postbar:
+    image: postbar:1.0
+    hostname: postbar
+    container_name: postbar
+    ports:
+      - 9998:9998
+    links:
+      - redis5_v1:redis
+    volumes:
+      - /home/lzs22/dockerdata/test/chinasoft-cloud/audio:/audio
+      - /home/lzs22/dockerdata/test/chinasoft-cloud/headphoto:/headPhoto
+      - /home/lzs22/dockerdata/test/chinasoft-cloud/kindeditorImage:/kindeditorImage
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.18
+
+  pb-app-mapper:
+    image: pb-app-mapper:1.0
+    hostname: pbappmapper
+    container_name: pb-app-mapper
+    links:
+      - mysql8v1:mysql80
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.20
+
+  pb-audio-mapper:
+    image: pb-audio-mapper:1.0
+    hostname: pbaudiomapper
+    container_name: pb-audio-mapper
+    links:
+      - mysql8v1:mysql80
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.21
+
+  pb-comment-mapper:
+    image: pb-comment-mapper:1.0
+    hostname: pbcommentmapper
+    container_name: pb-comment-mapper
+    links:
+      - mysql8v1:mysql80
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.22
+
+  pb-comment-praise-mapper:
+    image: pb-comment-praise-mapper:1.0
+    hostname: pbcommentpraisemapper
+    container_name: pb-comment-praise-mapper
+    links:
+      - mysql8v1:mysql80
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.23
+
+  pb-post-mapper:
+    image: pb-post-mapper:1.0
+    hostname: pbpostmapper
+    container_name: pb-post-mapper
+    links:
+      - mysql8v1:mysql80
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.24
+
+  pb-post-praise-mapper:
+    image: pb-post-praise-mapper:1.0
+    hostname: pbpostpraisemapper
+    container_name: pb-post-praise-mapper
+    links:
+      - mysql8v1:mysql80
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.25
+
+  pb-register-mapper:
+    image: pb-register-mapper:1.0
+    hostname: pbregistermapper
+    container_name: pb-register-mapper
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.26
+
+  pb-user-mapper:
+    image: pb-user-mapper:1.0
+    hostname: pbusermapper
+    container_name: pb-user-mapper
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.27
+
+  audio-setup:
+    image: audio-setup:1.0
+    hostname: audio-setup
+    container_name: audio-setup
+    links:
+      - mysql8v1:mysql80
+      - redis5_v1:redis
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.30
+
+  comment:
+    image: comment:1.0
+    hostname: comment
+    container_name: comment
+    links:
+      - mysql8v1:mysql80
+      - redis5_v1:redis
+    volumes:
+      - /home/lzs22/dockerdata/test/chinasoft-cloud/audio:/audio
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.30
+
+  login:
+    image: login:1.0
+    hostname: login
+    container_name: login
+    links:
+      - mysql8v1:mysql80
+      - redis5_v1:redis
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.31
+
+  my-comment:
+    image: my-comment:1.0
+    hostname: my-comment
+    container_name: my-comment
+    links:
+      - mysql8v1:mysql80
+      - redis5_v1:redis
+    volumes:
+      - /home/lzs22/dockerdata/test/chinasoft-cloud/audio:/audio
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.32
+
+  my-post:
+    image: my-post:1.0
+    hostname: my-post
+    container_name: my-post
+    links:
+      - mysql8v1:mysql80
+      - redis5_v1:redis
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.33
+
+  per-setup:
+    image: per-setup:1.0
+    hostname: per-setup
+    container_name: per-setup
+    links:
+      - mysql8v1:mysql80
+      - redis5_v1:redis
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.34
+
+  post:
+    image: post:1.0
+    hostname: post
+    container_name: post
+    links:
+      - mysql8v1:mysql80
+      - redis5_v1:redis
+    volumes:
+      - /home/lzs22/dockerdata/test/chinasoft-cloud/audio:/audio
+      - /home/lzs22/dockerdata/test/chinasoft-cloud/kindeditorImage:/kindeditorImage
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.35
+
+  upload-head:
+    image: upload-head:1.0
+    hostname: upload-head
+    container_name: upload-head
+    links:
+      - redis5_v1:redis
+    volumes:
+      - /home/lzs22/dockerdata/test/chinasoft-cloud/kindeditorImage:/kindeditorImage
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.36
+
+  user-manage:
+    image: user-manage:1.0
+    hostname: user-manage
+    container_name: user-manage
+    links:
+      - mysql8v1:mysql80
+      - redis5_v1:redis
+    environment:
+      - spring.profiles.active=test
+    networks:
+      chinasofti:
+        - ipv4_address: 172.22.1.37
+
+networks:
+  chinasofti:
+    external:
+      name: chinasofti

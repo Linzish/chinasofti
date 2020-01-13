@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.postbar.pbpostpraisemapper.mapper.PbPostPraiseMapper">
+	<resultMap id="BaseResultMap" type="com.chinasofti.postbar.pbpostpraisemapper.dto.PostPraiseDto">
+		<result column="postUUID" property="postUUID" jdbcType="VARCHAR" />
+		<result column="userUUID" property="userUUID" jdbcType="VARCHAR" />
+		<result column="poPrUUID" property="poPrUUID" jdbcType="VARCHAR" />
+	</resultMap>
+	<delete id="deletePostPraise" parameterType="java.lang.String">
+		DELETE FROM pb_post_praise WHERE postUUID in
+		<foreach item='item' index='index' collection='postUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+
+
+	<delete id="deletePostPraiseByUserUUID" parameterType="java.lang.String">
+		DELETE FROM pb_post_praise WHERE userUUID in
+		<foreach item='item' index='index' collection='userUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+
+
+
+	<select id="selectPraiseByPostUUID" parameterType="java.lang.String"
+		resultType="com.chinasofti.postbar.pbpostpraisemapper.dto.PostPraiseDto">
+		SELECT * FROM pb_post_praise WHERE postUUID=#{postUUID}
+	</select>
+
+
+	<insert id="insertPraise" parameterType="com.chinasofti.postbar.pbpostpraisemapper.dto.PostPraiseDto">
+		INSERT INTO
+		pb_post_praise (poPrUUID,postUUID,userUUID) VALUES
+		(#{poPrUUID},#{postUUID},#{userUUID})
+	</insert>
+
+	<select id="selectPraiseNum" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		SELECT count(*) FROM pb_post_praise WHERE
+		postUUID=#{postUUID}
+	</select>
+
+
+</mapper>

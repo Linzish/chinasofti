@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.postbar.pbusermapper.mapper.PbUserMapper">
+	<resultMap id="BaseResultMap" type="com.chinasofti.postbar.pbusermapper.dto.UserDto">
+		<result column="userUUID" property="userUUID" jdbcType="VARCHAR" />
+		<result column="userName" property="userName" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+		<result column="loginTime" property="loginTime" jdbcType="VARCHAR" />
+		<result column="admin" property="admin" jdbcType="VARCHAR" />
+	</resultMap>
+	<insert id="insertUser" parameterType="com.chinasofti.postbar.pbusermapper.dto.UserDto">
+		INSERT INTO pb_user
+		(userUUID,userName,password,loginTime,admin) VALUES
+		(#{userUUID},#{userName},#{password},#{loginTime},#{admin})
+	</insert>
+
+	<select id="selectUserNumByUserName" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		SELECT count(*) FROM pb_user WHERE userName=#{userName}
+	</select>
+
+	<select id="selectUserByUserNameAndPassword" parameterType="map"
+		resultType="com.chinasofti.postbar.pbusermapper.dto.UserDto">
+		SELECT * FROM pb_user WHERE userName=#{userName} and
+		password=#{password}
+	</select>
+
+	<update id="updateLoginTimeByUserName" parameterType="map">
+		UPDATE
+		pb_user SET loginTime=#{loginTime} WHERE userName=#{userName}
+	</update>
+
+	<select id="selectUserByUserUUID" parameterType="java.lang.String"
+		resultType="com.chinasofti.postbar.pbusermapper.dto.UserDto">
+		SELECT * FROM pb_user WHERE userUUID=#{userUUID}
+	</select>
+
+	<update id="updateUserNameByUserUUID" parameterType="map">
+		UPDATE
+		pb_user SET userName=#{userName} WHERE userUUID=#{userUUID}
+	</update>
+
+	<update id="updatePasswordByUserName" parameterType="map">
+		UPDATE
+		pb_user SET password=#{password} WHERE userName=#{userName}
+	</update>
+
+	<select id="selectUserAllNum" parameterType="map" resultType="java.lang.Integer">
+		SELECT count(*) FROM pb_user WHERE
+		<if test='userName!=null and userName != "" '>
+			userName LIKE CONCAT('%',#{userName},'%') AND
+		</if>
+		userUUID != #{userUUID}
+	</select>
+
+	<delete id="deleteUserByUserUUID" parameterType="java.lang.String">
+		DELETE FROM pb_user WHERE userUUID in
+		<foreach item='item' index='index' collection='userUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+
+	<update id="updateUserByUserUUID" parameterType="com.chinasofti.postbar.pbusermapper.dto.UserDto">
+		UPDATE pb_user SET userName=#{userName},admin=#{admin}
+		<if test='password!=null and password != "" '>
+			,password=#{password}
+		</if>
+		WHERE userUUID=#{userUUID}
+	</update>
+
+</mapper>

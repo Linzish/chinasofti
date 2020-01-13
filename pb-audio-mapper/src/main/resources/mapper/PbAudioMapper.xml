@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.postbar.pbaudiomapper.mapper.PbAudioMapper">
+	<resultMap id="BaseResultMap" type="com.chinasofti.postbar.pbaudiomapper.dto.AudioDto">
+		<result column="auSetUUID" property="auSetUUID" jdbcType="VARCHAR" />
+		<result column="userUUID" property="userUUID" jdbcType="VARCHAR" />
+		<result column="auSetSpd" property="auSetSpd" jdbcType="INTEGER" />
+		<result column="auSetPit" property="auSetPit" jdbcType="INTEGER" />
+		<result column="auSetVol" property="auSetVol" jdbcType="INTEGER" />
+		<result column="auSetVoiPer" property="auSetVoiPer" jdbcType="INTEGER" />
+	</resultMap>
+	<insert id="insertAudio" parameterType="com.chinasofti.postbar.pbaudiomapper.dto.AudioDto">
+		INSERT INTO pb_audio
+		(auSetUUID,userUUID,auSetSpd,auSetPit,auSetVol,auSetVoiPer) VALUES
+		(#{auSetUUID},#{userUUID},#{auSetSpd},#{auSetPit},#{auSetVol},#{auSetVoiPer})
+	</insert>
+	<select id="selectAudioByUserUUID" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		SELECT auSetUUID,userUUID,auSetSpd,auSetPit,auSetVol,auSetVoiPer FROM
+		pb_audio WHERE userUUID=#{userUUID}
+	</select>
+	<update id="updateAudioByAuSetUUID" parameterType="com.chinasofti.postbar.pbaudiomapper.dto.AudioDto">
+		UPDATE pb_audio SET auSetSpd =
+		#{auSetSpd},auSetPit=#{auSetPit},auSetVol=#{auSetVol},auSetVoiPer=#{auSetVoiPer}
+		WHERE auSetUUID = #{auSetUUID}
+	</update>
+	<delete id="deleteAudioByUserUUID" parameterType="java.lang.String">
+		DELETE FROM pb_audio WHERE userUUID in
+		<foreach item='item' index='index' collection='userUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+</mapper>

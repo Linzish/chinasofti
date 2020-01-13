@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.postbar.pbpostmapper.mapper.PbPostMapper">
+	<resultMap id="BaseResultMap" type="com.chinasofti.postbar.pbpostmapper.dto.PostDto">
+		<result column="postUUID" property="postUUID" jdbcType="VARCHAR" />
+		<result column="userUUID" property="userUUID" jdbcType="VARCHAR" />
+		<result column="postTitle" property="postTitle" jdbcType="VARCHAR" />
+		<result column="postText" property="postText" jdbcType="VARCHAR" />
+		<result column="postPageviews" property="postPageviews"
+			jdbcType="INTEGER" />
+		<result column="postAudio" property="postAudio" jdbcType="VARCHAR" />
+
+		<result column="postTime" property="postTime" jdbcType="VARCHAR" />
+		<result column="userName" property="userName" jdbcType="VARCHAR" />
+		<result column="commentNum" property="commentNum" jdbcType="INTEGER" />
+		<result column="cmTime" property="cmTime" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="insertPost" parameterType="com.chinasofti.postbar.pbpostmapper.dto.PostDto">
+		INSERT INTO pb_post
+		(postUUID,userUUID,postTitle,postText,postPageviews,postAudio,postTime)
+		VALUES
+		(#{postUUID},#{userUUID},#{postTitle},#{postText},#{postPageviews},#{postAudio},#{postTime})
+	</insert>
+
+
+	<select id="selectPostAllNum" parameterType="map" resultType="java.lang.Integer">
+		SELECT count(*) FROM pb_post
+		<if test='postTitle!=null and postTitle != "" '>
+			WHERE postTitle LIKE CONCAT('%',#{postTitle},'%')
+		</if>
+		<if
+			test='(postTitle!=null and postTitle != "") and (userUUID!=null and userUUID != "") '>
+			AND userUUID=#{userUUID}
+		</if>
+		<if
+			test='(postTitle==null or postTitle == "") and (userUUID!=null and userUUID != "") '>
+			WHERE userUUID=#{userUUID}
+		</if>
+	</select>
+
+
+	<select id="selectPostList" parameterType="map"
+		resultType="com.chinasofti.postbar.pbpostmapper.dto.PostDto">
+		SELECT a.postUUID,c.userName,f.cmTime,IFNULL(f.commentNum,0) as
+		commentNum,a.userUUID,a.postTitle,a.postPageviews,a.postTime FROM
+		(pb_post as a LEFT JOIN (SELECT b.userName,b.userUUID FROM pb_user as
+		b ) as c ON a.userUUID=c.userUUID) LEFT JOIN (SELECT COUNT(*) AS
+		commentNum,e.postUUID,max(e.cmTime) AS cmTime FROM post_bar.pb_comment
+		as e GROUP BY e.postUUID ) AS f ON f.postUUID=a.postUUID
+		<if test='postTitle!=null and postTitle != "" '>
+			WHERE a.postTitle LIKE CONCAT('%',#{postTitle},'%')
+		</if>
+		<if
+			test='(postTitle==null or postTitle == "") and (userUUID!=null and userUUID != "") '>
+			WHERE a.userUUID=#{userUUID}
+		</if>
+		<if
+			test='(postTitle!=null and postTitle != "") and (userUUID!=null and userUUID != "") '>
+			AND a.userUUID=#{userUUID}
+		</if>
+		ORDER BY f.cmTime DESC
+		LIMIT #{startNo},#{pageSize}
+	</select>
+
+
+	<delete id="deletePost" parameterType="java.lang.String">
+		DELETE FROM pb_post WHERE postUUID in
+		<foreach item='item' index='index' collection='postUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+
+	<delete id="deletePostByUserUUID" parameterType="java.lang.String">
+		DELETE FROM pb_post WHERE userUUID in
+		<foreach item='item' index='index' collection='userUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+	<select id="selectPostByPostUUID" parameterType="java.lang.String"
+		resultType="com.chinasofti.postbar.pbpostmapper.dto.PostDto">
+		SELECT * FROM pb_post as a WHERE postUUID=#{postUUID}
+	</select>
+	<update id="updatePostPageviews" parameterType='map' >
+		UPDATE pb_post SET postPageviews=#{postPageviews} WHERE postUUID=#{postUUID}
+	</update>
+</mapper>

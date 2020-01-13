@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.postbar.pbappmapper.mapper.PbAppMapper" >
+  <resultMap id="BaseResultMap" type="com.chinasofti.postbar.pbappmapper.dto.AppDto" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="appID" property="appID" jdbcType="VARCHAR" />
+    <result column="apiKey" property="apiKey" jdbcType="VARCHAR" />
+    <result column="secretKey" property="secretKey" jdbcType="VARCHAR" />
+  </resultMap>
+<!--   AppDto selectApp(); -->
+  <select id="selectApp" resultMap="BaseResultMap">
+   select id,appID,apiKey,secretKey from pb_app
+  </select>
+</mapper>

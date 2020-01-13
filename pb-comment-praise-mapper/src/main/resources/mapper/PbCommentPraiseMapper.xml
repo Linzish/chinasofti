@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.postbar.pbcommentpraisemapper.mapper.PbCommentPraiseMapper">
+
+	<delete id="deleteCommentPraiseByPostUUID" parameterType="java.lang.String">
+		DELETE FROM pb_comment_praise WHERE postUUID in
+		<foreach item='item' index='index' collection='postUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+
+	<delete id="deleteCommentPraiseByUserUUID" parameterType="java.lang.String">
+		DELETE FROM pb_comment_praise WHERE userUUID in
+		<foreach item='item' index='index' collection='userUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+
+
+	<delete id="deleteCommentPraiseByCmUUID" parameterType="java.lang.String">
+		DELETE FROM pb_comment_praise WHERE cmUUID in
+		<foreach item='item' index='index' collection='cmUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+
+
+	<select id="selectCommentNumByParameter" parameterType="map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM pb_comment_praise WHERE
+		<if test='userUUID!=null and userUUID != "" '>
+			userUUID=#{userUUID} AND
+		</if>
+		cmUUID=#{cmUUID} AND postUUID=#{postUUID}
+	</select>
+
+	<insert id="insertPraise" parameterType="com.chinasofti.postbar.pbcommentpraisemapper.dto.CommentPraiseDto">
+		INSERT INTO
+		pb_comment_praise (cmPrUUID,postUUID,userUUID,cmUUID) VALUES
+		(#{cmPrUUID},#{postUUID},#{userUUID},#{cmUUID})
+	</insert>
+</mapper>

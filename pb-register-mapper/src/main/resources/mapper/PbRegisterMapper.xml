@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.chinasofti.postbar.pbregistermapper.mapper.PbRegisterMapper">
+	<resultMap id="BaseResultMap" type="com.chinasofti.postbar.pbregistermapper.dto.RegisterDto">
+		<result column="regUUID" property="regUUID" jdbcType="VARCHAR" />
+		<result column="userUUID" property="userUUID" jdbcType="VARCHAR" />
+		<result column="regSex" property="regSex" jdbcType="VARCHAR" />
+		<result column="regAge" property="regAge" jdbcType="INTEGER" />
+		<result column="regEmial" property="regEmial" jdbcType="VARCHAR" />
+		<result column="regPhoto" property="regPhoto" jdbcType="VARCHAR" />
+		<result column="userName" property="userName" jdbcType="VARCHAR" />
+		<result column="regTime" property="regTime" jdbcType="VARCHAR" />
+		<result column="loginTime" property="loginTime" jdbcType="VARCHAR" />
+		<result column="admin" property="admin" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<insert id="insertRegister" parameterType="com.chinasofti.postbar.pbregistermapper.dto.RegisterDto">
+		INSERT INTO
+		pb_register
+		(regUUID,userUUID,regSex,regAge,regEmial,regPhoto,regTime)
+		VALUES
+		(#{regUUID},#{userUUID},#{regSex},#{regAge},#{regEmial},#{regPhoto},#{regTime})
+	</insert>
+	<select id="selectRegister" parameterType="java.lang.String"
+		resultType="com.chinasofti.postbar.pbregistermapper.dto.RegisterDto">
+		SELECT * FROM pb_register WHERE userUUID=#{userUUID}
+	</select>
+	<select id="selectRegisterAndUserName" parameterType="java.lang.String"
+		resultType="com.chinasofti.postbar.pbregistermapper.dto.RegisterDto">
+		SELECT
+		a.regUUID,a.regAge,a.regEmial,a.regSex,a.regUUID,a.userUUID,b.userName
+		FROM pb_register a,pb_user b WHERE a.userUUID=b.userUUID AND
+		a.userUUID=#{userUUID}
+	</select>
+
+	<update id="upDateRegisterByRegUUID" parameterType="com.chinasofti.postbar.pbregistermapper.dto.RegisterDto">
+		UPDATE
+		pb_register SET
+		regSex=#{regSex},regAge=#{regAge},regEmial=#{regEmial}
+		WHERE
+		regUUID=#{regUUID}
+	</update>
+
+	<select id="selectRegPhotoByUserUUID" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		SELECT regPhoto FROM pb_register WHERE userUUID=#{userUUID}
+	</select>
+
+
+	<update id="upDateRegPhotoByRegUUID" parameterType="com.chinasofti.postbar.pbregistermapper.dto.RegisterDto">
+		UPDATE
+		pb_register SET regPhoto=#{regPhoto} WHERE userUUID=#{userUUID}
+	</update>
+
+	<select id="selectRegList" parameterType="map"
+		resultType="com.chinasofti.postbar.pbregistermapper.dto.RegisterDto">
+		SELECT
+		b.regUUID,b.userUUID,b.regSex,b.regAge,b.regEmial,b.regTime,a.userName,a.loginTime,a.admin
+		FROM pb_register b,pb_user a WHERE a.userUUID=b.userUUID
+		<if test='userName!=null and userName != "" '>
+			AND a.userName LIKE CONCAT('%',#{userName},'%')
+		</if>
+		AND a.userUUID != #{userUUID}
+		ORDER BY b.regTime DESC
+		LIMIT
+		#{startNo},#{pageSize}
+	</select>
+
+
+	<delete id="deleteRegByUserUUID" parameterType="java.lang.String">
+		DELETE FROM pb_register WHERE userUUID in
+		<foreach item='item' index='index' collection='userUUID' open='('
+			separator=',' close=')'>
+			#{item}
+		</foreach>
+	</delete>
+
+	<update id="updateRegByUserUUID" parameterType="com.chinasofti.postbar.pbregistermapper.dto.RegisterDto">
+		UPDATE
+		pb_register SET regSex=#{regSex},regAge=#{regAge},regEmial=#{regEmial}
+		WHERE userUUID=#{userUUID}
+	</update>
+
+</mapper>
